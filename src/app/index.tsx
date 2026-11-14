@@ -1,93 +1,261 @@
-import * as Device from "expo-device";
-import { Platform, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from 'expo-router';
+import {
+    Pressable,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from "@/components/animated-icon";
-import { HintRow } from "@/components/hint-row";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { WebBadge } from "@/components/web-badge";
-import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
+export default function WelcomeScreen() {
+  const router = useRouter();
 
-function getDevMenuHint() {
-  if (Platform.OS === "web") {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === "android" ? "cmd+m (or ctrl+m)" : "cmd+d";
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" />
 
-export default function HomeScreen() {
-  return (
-    <ThemedView>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* LOGOTIPO */}
+        <View style={styles.header}>
+          <Text style={styles.logoIcon}>🌱</Text>
+          <Text style={styles.logo}>AgroCycle</Text>
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        {/* ILUSTRACIÓN */}
+        <View style={styles.illustration}>
+          <View style={styles.sun}>
+            <Text style={styles.sunIcon}>☀️</Text>
+          </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+          <View style={styles.field}>
+            <Text style={styles.plant}>🌾</Text>
+            <Text style={styles.plant}>🌱</Text>
+            <Text style={styles.plant}>🌿</Text>
+            <Text style={styles.plant}>🌱</Text>
+            <Text style={styles.plant}>🌾</Text>
+          </View>
 
-        {Platform.OS === "web" && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <Text style={styles.illustrationText}>
+            Agricultura inteligente y sostenible
+          </Text>
+        </View>
+
+        {/* PRESENTACIÓN */}
+        <View style={styles.introduction}>
+          <Text style={styles.tag}>AGRICULTURA DEL FUTURO</Text>
+
+          <Text style={styles.title}>
+            Adapta tus cultivos a las condiciones de tu terreno
+          </Text>
+
+          <Text style={styles.description}>
+            AgroCycle combina información ambiental y datos
+            locales para ayudarte a comparar opciones de
+            rotación de cultivos y tomar mejores decisiones
+            para tu terreno.
+          </Text>
+        </View>
+
+        {/* BENEFICIOS */}
+        <View style={styles.benefits}>
+          <View style={styles.benefit}>
+            <Text style={styles.benefitIcon}>🌦️</Text>
+            <Text style={styles.benefitText}>
+              Datos ambientales
+            </Text>
+          </View>
+
+          <View style={styles.benefit}>
+            <Text style={styles.benefitIcon}>🌱</Text>
+            <Text style={styles.benefitText}>
+              Rotación de cultivos
+            </Text>
+          </View>
+        </View>
+
+        {/* BOTONES */}
+        <View style={styles.actions}>
+          <Pressable
+            style={styles.primaryButton}
+            onPress={() => router.push('/registro')}
+          >
+            <Text style={styles.primaryButtonText}>
+              Comenzar
+            </Text>
+            <Text style={styles.buttonArrow}>→</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.secondaryButton}
+            onPress={() => router.push('/login')}
+          >
+            <Text style={styles.secondaryButtonText}>
+              Ya tengo una cuenta
+            </Text>
+          </Pressable>
+        </View>
+
+        <Text style={styles.footer}>
+          AgroCycle · Cultivando un futuro sostenible
+        </Text>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: "center",
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    backgroundColor: '#F4F7F0',
   },
-  heroSection: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 25,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 25,
+  },
+  logoIcon: {
+    fontSize: 29,
+    marginRight: 8,
+  },
+  logo: {
+    fontSize: 27,
+    fontWeight: 'bold',
+    color: '#173D2B',
+    letterSpacing: 0.5,
+  },
+  illustration: {
+    height: 205,
+    backgroundColor: '#E2EDDF',
+    borderRadius: 22,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    overflow: 'hidden',
+    paddingBottom: 17,
+  },
+  sun: {
+    position: 'absolute',
+    top: 20,
+    right: 35,
+  },
+  sunIcon: {
+    fontSize: 38,
+  },
+  field: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    backgroundColor: '#B6D0A9',
+    width: '100%',
+    height: 115,
+    borderTopLeftRadius: 100,
+    borderTopRightRadius: 100,
+    paddingBottom: 12,
+  },
+  plant: {
+    fontSize: 34,
+    marginHorizontal: 5,
+  },
+  illustrationText: {
+    color: '#365B40',
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 12,
+  },
+  introduction: {
+    marginTop: 28,
+  },
+  tag: {
+    color: '#568365',
+    fontSize: 11,
+    fontWeight: 'bold',
+    letterSpacing: 1.5,
   },
   title: {
-    textAlign: "center",
+    color: '#173D2B',
+    fontSize: 29,
+    lineHeight: 36,
+    fontWeight: 'bold',
+    marginTop: 12,
   },
-  code: {
-    textTransform: "uppercase",
+  description: {
+    color: '#68756B',
+    fontSize: 14,
+    lineHeight: 22,
+    marginTop: 13,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: "stretch",
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  benefits: {
+    flexDirection: 'row',
+    marginTop: 22,
+    gap: 10,
+  },
+  benefit: {
+    flex: 1,
+    backgroundColor: '#E8EFE4',
+    borderRadius: 13,
+    padding: 12,
+    alignItems: 'center',
+  },
+  benefitIcon: {
+    fontSize: 23,
+  },
+  benefitText: {
+    color: '#365B40',
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 7,
+    textAlign: 'center',
+  },
+  actions: {
+    marginTop: 27,
+    gap: 12,
+  },
+  primaryButton: {
+    backgroundColor: '#24583A',
+    padding: 17,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonArrow: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    position: 'absolute',
+    right: 20,
+  },
+  secondaryButton: {
+    padding: 15,
+    borderRadius: 13,
+    borderWidth: 1.5,
+    borderColor: '#24583A',
+    alignItems: 'center',
+  },
+  secondaryButtonText: {
+    color: '#24583A',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  footer: {
+    color: '#89958A',
+    fontSize: 11,
+    textAlign: 'center',
+    marginTop: 25,
   },
 });
