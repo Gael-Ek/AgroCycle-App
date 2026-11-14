@@ -1,144 +1,194 @@
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useRegister } from "@/hooks/use-auth";
+import { RegisterFormData, registerSchema } from "@/schemas/auth-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegistroScreen() {
   const router = useRouter();
+  const registerMutation = useRegister();
 
-  const [nombre, setNombre] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [contrasena, setContrasena] = useState('');
-  const [confirmar, setConfirmar] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const registrarUsuario = () => {
-    if (!nombre.trim() || !correo.trim() || !contrasena || !confirmar) {
-      Alert.alert('Campos incompletos', 'Completa todos los campos.');
-      return;
-    }
+  const isLoading = registerMutation.isPending;
 
-    if (!correo.includes('@') || !correo.includes('.')) {
-      Alert.alert('Correo inválido', 'Ingresa un correo electrónico válido.');
-      return;
-    }
-
-    if (contrasena.length < 8) {
-      Alert.alert(
-        'Contraseña no válida',
-        'Utiliza al menos 8 caracteres.'
-      );
-      return;
-    }
-
-    if (contrasena !== confirmar) {
-      Alert.alert('Error', 'Las contraseñas no coinciden.');
-      return;
-    }
-
-    Alert.alert(
-      'AgroCycle',
-      'Formulario validado. Próximamente conectaremos el registro de usuarios.'
-    );
+  const onSubmit = (data: RegisterFormData) => {
+    registerMutation.mutate(data);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-[#F4F7F0]">
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView contentContainerStyle={styles.content}>
-          <Pressable
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backText}>‹ Volver</Text>
+        <ScrollView contentContainerClassName="grow p-6">
+          <Pressable className="mb-[18px]" onPress={() => router.back()}>
+            <Text className="text-[#315D40] text-base font-semibold">
+              ‹ Volver
+            </Text>
           </Pressable>
 
-          <View style={styles.header}>
-            <Text style={styles.logo}>🌱</Text>
-            <Text style={styles.brand}>AgroCycle</Text>
-            <Text style={styles.subtitle}>
+          <View className="items-center mb-[25px]">
+            <Text className="text-[48px]">🌱</Text>
+            <Text className="text-[29px] font-bold text-[#245238] mt-[5px]">
+              AgroCycle
+            </Text>
+            <Text className="text-[13px] text-[#718575] mt-[5px] text-center">
               Únete a una agricultura más inteligente
             </Text>
           </View>
 
-          <View style={styles.form}>
-            <Text style={styles.title}>Crear cuenta</Text>
-            <Text style={styles.description}>
+          <View className="bg-white p-[22px] rounded-[22px] shadow-sm">
+            <Text className="text-[26px] font-bold text-[#214A32] mb-2">
+              Crear cuenta
+            </Text>
+            <Text className="text-[#78877B] text-sm leading-[21px] mb-[18px]">
               Regístrate para comenzar a gestionar tus terrenos y cultivos.
             </Text>
 
-            <Text style={styles.label}>Nombre completo</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Tu nombre"
-              placeholderTextColor="#9BA99D"
-              value={nombre}
-              onChangeText={setNombre}
+            <Text className="text-[#315D40] font-semibold mb-2 mt-3">
+              Nombre completo
+            </Text>
+            <Controller
+              control={control}
+              name="name" // O el nombre del campo en tu schema
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  className="bg-[#F4F7F0] border border-[#DCE7DC] rounded-xl p-[14px] text-[15px] text-[#244631]"
+                  placeholder="Tu nombre"
+                  placeholderTextColor="#9BA99D"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
             />
+            {errors.name && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.name.message}
+              </Text>
+            )}
 
-            <Text style={styles.label}>Correo electrónico</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="ejemplo@correo.com"
-              placeholderTextColor="#9BA99D"
-              value={correo}
-              onChangeText={setCorreo}
-              keyboardType="email-address"
-              autoCapitalize="none"
+            {/* CAMPO: Correo electrónico */}
+            <Text className="text-[#315D40] font-semibold mb-2 mt-3">
+              Correo electrónico
+            </Text>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  className="bg-[#F4F7F0] border border-[#DCE7DC] rounded-xl p-[14px] text-[15px] text-[#244631]"
+                  placeholder="ejemplo@correo.com"
+                  placeholderTextColor="#9BA99D"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              )}
             />
+            {errors.email && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.email.message}
+              </Text>
+            )}
 
-            <Text style={styles.label}>Contraseña</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Mínimo 8 caracteres"
-              placeholderTextColor="#9BA99D"
-              value={contrasena}
-              onChangeText={setContrasena}
-              secureTextEntry
+            {/* CAMPO: Contraseña */}
+            <Text className="text-[#315D40] font-semibold mb-2 mt-3">
+              Contraseña
+            </Text>
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  className="bg-[#F4F7F0] border border-[#DCE7DC] rounded-xl p-[14px] text-[15px] text-[#244631]"
+                  placeholder="Mínimo 8 caracteres"
+                  placeholderTextColor="#9BA99D"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  secureTextEntry
+                />
+              )}
             />
+            {errors.password && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.password.message}
+              </Text>
+            )}
 
-            <Text style={styles.label}>Confirmar contraseña</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Repite tu contraseña"
-              placeholderTextColor="#9BA99D"
-              value={confirmar}
-              onChangeText={setConfirmar}
-              secureTextEntry
+            {/* CAMPO: Confirmar contraseña */}
+            <Text className="text-[#315D40] font-semibold mb-2 mt-3">
+              Confirmar contraseña
+            </Text>
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  className="bg-[#F4F7F0] border border-[#DCE7DC] rounded-xl p-[14px] text-[15px] text-[#244631]"
+                  placeholder="Repite tu contraseña"
+                  placeholderTextColor="#9BA99D"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  secureTextEntry
+                />
+              )}
             />
+            {errors.confirmPassword && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.confirmPassword.message}
+              </Text>
+            )}
 
+            {/* BOTÓN DE REGISTRO */}
             <Pressable
-              style={styles.registerButton}
-              onPress={registrarUsuario}
+              className="bg-[#2F7048] p-[17px] rounded-xl items-center mt-[25px]"
+              onPress={() => handleSubmit(onSubmit)()}
+              disabled={isLoading}
             >
-              <Text style={styles.registerButtonText}>
-                Crear cuenta
+              <Text className="text-white font-bold text-base">
+                {isLoading ? <ActivityIndicator /> : "Registrarme"}
               </Text>
             </Pressable>
 
-            <View style={styles.loginContainer}>
-              <Text style={styles.loginText}>
-                ¿Ya tienes una cuenta?
-              </Text>
-              <Pressable onPress={() => router.push('/login')}>
-                <Text style={styles.loginLink}> Iniciar sesión</Text>
+            <View className="flex-row justify-center flex-wrap mt-[22px]">
+              <Text className="text-[#718575]">¿Ya tienes una cuenta?</Text>
+              <Pressable onPress={() => router.push("/login" as any)}>
+                <Text className="text-[#2F7048] font-bold">Iniciar sesión</Text>
               </Pressable>
             </View>
           </View>
 
-          <Text style={styles.footer}>
+          <Text className="text-center text-[#8A998D] text-xs mt-[25px] mb-[15px]">
             AgroCycle · Cultivando un futuro sostenible
           </Text>
         </ScrollView>
@@ -146,106 +196,3 @@ export default function RegistroScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F4F7F0',
-  },
-  content: {
-    flexGrow: 1,
-    padding: 24,
-  },
-  backButton: {
-    marginBottom: 18,
-  },
-  backText: {
-    color: '#315D40',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 25,
-  },
-  logo: {
-    fontSize: 48,
-  },
-  brand: {
-    fontSize: 29,
-    fontWeight: 'bold',
-    color: '#245238',
-    marginTop: 5,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: '#718575',
-    marginTop: 5,
-    textAlign: 'center',
-  },
-  form: {
-    backgroundColor: '#FFFFFF',
-    padding: 22,
-    borderRadius: 22,
-    elevation: 3,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#214A32',
-    marginBottom: 8,
-  },
-  description: {
-    color: '#78877B',
-    fontSize: 14,
-    lineHeight: 21,
-    marginBottom: 18,
-  },
-  label: {
-    color: '#315D40',
-    fontWeight: '600',
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    backgroundColor: '#F4F7F0',
-    borderWidth: 1,
-    borderColor: '#DCE7DC',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 15,
-    color: '#244631',
-  },
-  registerButton: {
-    backgroundColor: '#2F7048',
-    padding: 17,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 25,
-  },
-  registerButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    marginTop: 22,
-  },
-  loginText: {
-    color: '#718575',
-  },
-  loginLink: {
-    color: '#2F7048',
-    fontWeight: 'bold',
-  },
-  footer: {
-    textAlign: 'center',
-    color: '#8A998D',
-    fontSize: 12,
-    marginTop: 25,
-    marginBottom: 15,
-  },
-});

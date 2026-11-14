@@ -1,102 +1,133 @@
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useLogin } from "@/hooks/use-auth";
+import { LoginFormData, loginSchema } from "@/schemas/auth-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const router = useRouter();
+  const loginMutation = useLogin();
 
-  const [correo, setCorreo] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const iniciarSesion = () => {
-    if (!correo.trim() || !contrasena.trim()) {
-      Alert.alert('Campos incompletos', 'Ingresa tu correo y contraseña.');
-      return;
-    }
-
-    router.replace('/dashboard');
+  const onSubmit = (data: LoginFormData) => {
+    loginMutation.mutate(data);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-[#F4F7F0]">
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView contentContainerStyle={styles.content}>
-          <Pressable
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backText}>‹ Volver</Text>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-6">
+          <Pressable className="mb-[25px]" onPress={() => router.back()}>
+            <Text className="text-[#315D40] text-base font-semibold">
+              ‹ Volver
+            </Text>
           </Pressable>
 
-          <View style={styles.logoContainer}>
-            <Text style={styles.logo}>🌱</Text>
-            <Text style={styles.brand}>AgroCycle</Text>
-            <Text style={styles.subtitle}>
+          <View className="items-center mb-[35px]">
+            <Text className="text-[55px]">🌱</Text>
+            <Text className="text-[30px] font-bold text-[#245238] mt-[5px]">
+              AgroCycle
+            </Text>
+            <Text className="text-[13px] text-[#718575] mt-[5px]">
               Agricultura inteligente y sostenible
             </Text>
           </View>
 
-          <View style={styles.form}>
-            <Text style={styles.title}>¡Bienvenido!</Text>
-            <Text style={styles.description}>
+          <View className="bg-white p-6 rounded-[22px] elevation-3 shadow-sm">
+            <Text className="text-[27px] font-bold text-[#214A32] mb-2">
+              ¡Bienvenido!
+            </Text>
+            <Text className="text-[#78877B] text-[14px] leading-[21px] mb-[25px]">
               Inicia sesión para continuar con la gestión de tus cultivos.
             </Text>
 
-            <Text style={styles.label}>Correo electrónico</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="ejemplo@correo.com"
-              placeholderTextColor="#9BA99D"
-              value={correo}
-              onChangeText={setCorreo}
-              keyboardType="email-address"
-              autoCapitalize="none"
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View>
+                  <Text className="text-[#315D40] font-semibold mb-2 mt-3">
+                    Correo electrónico
+                  </Text>
+                  <TextInput
+                    className="bg-[#F4F7F0] border border-[#DCE7DC] rounded-xl p-[15px] text-[15px] text-[#244631]"
+                    placeholder="ejemplo@correo.com"
+                    placeholderTextColor="#9BA99D"
+                    value={value}
+                    onChangeText={onChange}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+
+                  {errors.email && <Text>{errors.email.message}</Text>}
+                </View>
+              )}
             />
 
-            <Text style={styles.label}>Contraseña</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ingresa tu contraseña"
-              placeholderTextColor="#9BA99D"
-              value={contrasena}
-              onChangeText={setContrasena}
-              secureTextEntry
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <View>
+                  <Text className="text-[#315D40] font-semibold mb-2 mt-3">
+                    Contraseña
+                  </Text>
+                  <TextInput
+                    className="bg-[#F4F7F0] border border-[#DCE7DC] rounded-xl p-[15px] text-[15px] text-[#244631]"
+                    placeholder="Ingresa tu contraseña"
+                    placeholderTextColor="#9BA99D"
+                    value={value}
+                    onChangeText={onChange}
+                    secureTextEntry
+                  />
+
+                  {errors.email && <Text>{errors.email.message}</Text>}
+                </View>
+              )}
             />
 
             <Pressable
-              style={styles.loginButton}
-              onPress={iniciarSesion}
+              className="bg-[#2F7048] p-[17px] rounded-xl items-center mt-7"
+              onPress={() => handleSubmit(onSubmit)()}
             >
-              <Text style={styles.loginButtonText}>
+              <Text className="text-white font-bold text-base">
                 Iniciar sesión
               </Text>
             </Pressable>
 
-            <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>
-                ¿No tienes una cuenta?
-              </Text>
-              <Pressable onPress={() => router.push('/registro')}>
-                <Text style={styles.registerLink}> Regístrate</Text>
+            <View className="flex-row justify-center mt-6 flex-wrap">
+              <Text className="text-[#718575]">¿No tienes una cuenta?</Text>
+              <Pressable onPress={() => router.push("/registro")}>
+                <Text className="text-[#2F7048] font-bold"> Regístrate</Text>
               </Pressable>
             </View>
           </View>
 
-          <Text style={styles.footer}>
+          <Text className="text-center text-[#8A998D] text-xs mt-[30px] mb-[15px]">
             AgroCycle · Cultivando un futuro sostenible
           </Text>
         </ScrollView>
@@ -104,105 +135,3 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F4F7F0',
-  },
-  content: {
-    flexGrow: 1,
-    padding: 24,
-  },
-  backButton: {
-    marginBottom: 25,
-  },
-  backText: {
-    color: '#315D40',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 35,
-  },
-  logo: {
-    fontSize: 55,
-  },
-  brand: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#245238',
-    marginTop: 5,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: '#718575',
-    marginTop: 5,
-  },
-  form: {
-    backgroundColor: '#FFFFFF',
-    padding: 24,
-    borderRadius: 22,
-    elevation: 3,
-  },
-  title: {
-    fontSize: 27,
-    fontWeight: 'bold',
-    color: '#214A32',
-    marginBottom: 8,
-  },
-  description: {
-    color: '#78877B',
-    fontSize: 14,
-    lineHeight: 21,
-    marginBottom: 25,
-  },
-  label: {
-    color: '#315D40',
-    fontWeight: '600',
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    backgroundColor: '#F4F7F0',
-    borderWidth: 1,
-    borderColor: '#DCE7DC',
-    borderRadius: 12,
-    padding: 15,
-    fontSize: 15,
-    color: '#244631',
-  },
-  loginButton: {
-    backgroundColor: '#2F7048',
-    padding: 17,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 28,
-  },
-  loginButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 24,
-    flexWrap: 'wrap',
-  },
-  registerText: {
-    color: '#718575',
-  },
-  registerLink: {
-    color: '#2F7048',
-    fontWeight: 'bold',
-  },
-  footer: {
-    textAlign: 'center',
-    color: '#8A998D',
-    fontSize: 12,
-    marginTop: 30,
-    marginBottom: 15,
-  },
-});

@@ -1,324 +1,180 @@
-import { useRouter } from 'expo-router';
-import {
-    Pressable,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthStore } from "@/stores/auth.store";
+import { useRouter } from "expo-router";
+import { Pressable, ScrollView, StatusBar, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DashboardScreen() {
   const router = useRouter();
+  const { user } = useAuthStore((state) => state);
 
+  // Obtener la primera letra del nombre o un signo de interrogación
+  const displayName = user?.user_metadata?.display_name || user?.email || "?";
+  const initial = displayName.charAt(0).toUpperCase();
   return (
-    <SafeAreaView style={styles.container}>
-       <StatusBar barStyle="dark-content" />
+    <SafeAreaView className="flex-1 bg-[#F4F7F0]">
+      <StatusBar barStyle="dark-content" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
+        {/* Header */}
+        <View className="flex-row justify-between items-center px-[22px] pt-[15px] pb-5">
           <View>
-            <Text style={styles.logo}>🌱 AgroCycle</Text>
-            <Text style={styles.headerSubtitle}>
+            <Text className="text-[25px] font-bold text-[#245238]">
+              🌱 AgroCycle
+            </Text>
+            <Text className="text-[#819083] text-xs mt-[3px]">
               Agricultura inteligente
             </Text>
           </View>
 
-          <View style={styles.profile}>
-            <Text style={styles.profileText}>A</Text>
+          <View className="w-[43px] h-[43px] rounded-[22px] bg-[#DCEBDD] justify-center items-center">
+            {/* Botón hacia el Perfil */}
+            <Pressable
+              onPress={() => router.push("/profile")}
+              className="w-[43px] h-[43px] rounded-[22px] bg-[#DCEBDD] justify-center items-center active:opacity-80 shadow-sm"
+            >
+              <Text className="text-[#245238] font-bold text-[18px]">
+                {initial}
+              </Text>
+            </Pressable>
           </View>
         </View>
 
-        <View style={styles.welcomeCard}>
-          <Text style={styles.welcomeSmall}>BIENVENIDO A</Text>
-          <Text style={styles.welcomeTitle}>AgroCycle</Text>
-          <Text style={styles.welcomeDescription}>
+        {/* Welcome Card */}
+        <View className="bg-[#245238] mx-5 p-[23px] rounded-[20px] mb-[27px]">
+          <Text className="text-[#C5DEC8] text-[11px] font-bold tracking-[1.5px]">
+            BIENVENIDO A
+          </Text>
+          <Text className="text-white text-[29px] font-bold mt-[7px]">
+            AgroCycle
+          </Text>
+          <Text className="text-[#E0EDE1] text-sm leading-[21px] mt-2">
             Adapta tus cultivos a las condiciones de tu terreno.
           </Text>
 
-          <View style={styles.location}>
-            <Text style={styles.locationText}>
-              📍 Yucatán, México
+          <View className="self-start bg-[#386B4A] px-3 py-2 rounded-[20px] mt-[17px]">
+            <Text className="text-white text-xs">📍 Yucatán, México</Text>
+          </View>
+        </View>
+
+        {/* Section Header: Condiciones ambientales */}
+        <View className="px-[22px] mb-[14px]">
+          <Text className="text-[19px] font-bold text-[#244631]">
+            Condiciones ambientales
+          </Text>
+          <Text className="text-[#849184] text-xs mt-1">Datos de ejemplo</Text>
+        </View>
+
+        {/* Metrics Grid */}
+        <View className="flex-row flex-wrap px-[15px] mb-[27px]">
+          <View className="w-[46%] bg-white m-[2%] p-[15px] rounded-[17px] elevation-2 shadow-sm">
+            <Text className="text-[27px] mb-2.5">🌡️</Text>
+            <Text className="text-[#778579] text-xs">Temperatura</Text>
+            <Text className="text-[#245238] text-[23px] font-bold mt-[5px]">
+              29 °C
+            </Text>
+            <Text className="text-[#91A094] text-[10px] mt-[5px]">
+              Ambiente cálido
+            </Text>
+          </View>
+
+          <View className="w-[46%] bg-white m-[2%] p-[15px] rounded-[17px] elevation-2 shadow-sm">
+            <Text className="text-[27px] mb-2.5">💧</Text>
+            <Text className="text-[#778579] text-xs">Humedad</Text>
+            <Text className="text-[#245238] text-[23px] font-bold mt-[5px]">
+              68 %
+            </Text>
+            <Text className="text-[#91A094] text-[10px] mt-[5px]">
+              Humedad moderada
+            </Text>
+          </View>
+
+          <View className="w-[46%] bg-white m-[2%] p-[15px] rounded-[17px] elevation-2 shadow-sm">
+            <Text className="text-[27px] mb-2.5">🌧️</Text>
+            <Text className="text-[#778579] text-xs">Precipitación</Text>
+            <Text className="text-[#245238] text-[23px] font-bold mt-[5px]">
+              12 mm
+            </Text>
+            <Text className="text-[#91A094] text-[10px] mt-[5px]">
+              Dato ilustrativo
+            </Text>
+          </View>
+
+          <View className="w-[46%] bg-white m-[2%] p-[15px] rounded-[17px] elevation-2 shadow-sm">
+            <Text className="text-[27px] mb-2.5">🌱</Text>
+            <Text className="text-[#778579] text-xs">Condición del suelo</Text>
+            <Text className="text-[#245238] text-[23px] font-bold mt-[5px]">
+              Húmedo
+            </Text>
+            <Text className="text-[#91A094] text-[10px] mt-[5px]">
+              Ejemplo de condición
             </Text>
           </View>
         </View>
 
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>
-            Condiciones ambientales
+        {/* Section Header: Mis herramientas */}
+        <View className="px-[22px] mb-[14px]">
+          <Text className="text-[19px] font-bold text-[#244631]">
+            Mis herramientas
           </Text>
-          <Text style={styles.sectionSubtitle}>
-            Datos de ejemplo
-          </Text>
-        </View>
-
-        <View style={styles.metricsGrid}>
-          <View style={styles.metricCard}>
-            <Text style={styles.metricIcon}>🌡️</Text>
-            <Text style={styles.metricLabel}>Temperatura</Text>
-            <Text style={styles.metricValue}>29 °C</Text>
-            <Text style={styles.metricDescription}>Ambiente cálido</Text>
-          </View>
-
-          <View style={styles.metricCard}>
-            <Text style={styles.metricIcon}>💧</Text>
-            <Text style={styles.metricLabel}>Humedad</Text>
-            <Text style={styles.metricValue}>68 %</Text>
-            <Text style={styles.metricDescription}>Humedad moderada</Text>
-          </View>
-
-          <View style={styles.metricCard}>
-            <Text style={styles.metricIcon}>🌧️</Text>
-            <Text style={styles.metricLabel}>Precipitación</Text>
-            <Text style={styles.metricValue}>12 mm</Text>
-            <Text style={styles.metricDescription}>Dato ilustrativo</Text>
-          </View>
-
-          <View style={styles.metricCard}>
-            <Text style={styles.metricIcon}>🌱</Text>
-            <Text style={styles.metricLabel}>Condición del suelo</Text>
-            <Text style={styles.metricValue}>Húmedo</Text>
-            <Text style={styles.metricDescription}>Ejemplo de condición</Text>
-          </View>
-        </View>
-
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Mis herramientas</Text>
-          <Text style={styles.sectionSubtitle}>
+          <Text className="text-[#849184] text-xs mt-1">
             Administra tu actividad agrícola
           </Text>
         </View>
 
+        {/* Action Card 1 */}
         <Pressable
-          style={styles.actionCard}
-         onPress={() => router.push('/terrenos')}
+          className="flex-row items-center bg-white mx-5 mb-3 p-[15px] rounded-[16px] elevation-2 shadow-sm"
+          onPress={() => router.push("/terrenos")}
         >
-          <View style={styles.actionIcon}>
-            <Text style={styles.actionEmoji}>🗺️</Text>
+          <View className="w-[48px] h-[48px] bg-[#EAF3E9] rounded-[13px] justify-center items-center">
+            <Text className="text-[25px]">🗺️</Text>
           </View>
-          <View style={styles.actionInfo}>
-            <Text style={styles.actionTitle}>Mis terrenos</Text>
-            <Text style={styles.actionDescription}>
+          <View className="flex-1 ml-[13px]">
+            <Text className="text-[#28533A] text-[15px] font-bold">
+              Mis terrenos
+            </Text>
+            <Text className="text-[#849184] text-[11px] mt-1">
               Registra y administra tus terrenos agrícolas.
             </Text>
           </View>
-          <Text style={styles.arrow}>›</Text>
+          <Text className="text-[#477D56] text-[28px]">›</Text>
         </Pressable>
 
+        {/* Action Card 2 */}
         <Pressable
-          style={styles.actionCard}
-          onPress={() => router.push('/explore')}
+          className="flex-row items-center bg-white mx-5 mb-3 p-[15px] rounded-[16px] elevation-2 shadow-sm"
+          onPress={() => router.push("/explore")}
         >
-          <View style={styles.actionIcon}>
-            <Text style={styles.actionEmoji}>🌾</Text>
+          <View className="w-[48px] h-[48px] bg-[#EAF3E9] rounded-[13px] justify-center items-center">
+            <Text className="text-[25px]">🌾</Text>
           </View>
-          <View style={styles.actionInfo}>
-            <Text style={styles.actionTitle}>Explorar cultivos</Text>
-            <Text style={styles.actionDescription}>
+          <View className="flex-1 ml-[13px]">
+            <Text className="text-[#28533A] text-[15px] font-bold">
+              Explorar cultivos
+            </Text>
+            <Text className="text-[#849184] text-[11px] mt-1">
               Consulta herramientas e información agrícola.
             </Text>
           </View>
-          <Text style={styles.arrow}>›</Text>
+          <Text className="text-[#477D56] text-[28px]">›</Text>
         </Pressable>
 
-        <View style={styles.tipCard}>
-          <Text style={styles.tipTitle}>🌿 Consejo agrícola</Text>
-          <Text style={styles.tipText}>
-            Conocer las condiciones del suelo y el clima ayuda a
-            elegir cultivos adecuados y planificar la rotación.
+        {/* Tip Card */}
+        <View className="bg-[#E5F0E2] mx-5 mt-[13px] p-[17px] rounded-[16px]">
+          <Text className="text-[#28533A] text-[15px] font-bold">
+            🌿 Consejo agrícola
+          </Text>
+          <Text className="text-[#58725D] text-xs leading-[19px] mt-2">
+            Conocer las condiciones del suelo y el clima ayuda a elegir cultivos
+            adecuados y planificar la rotación.
           </Text>
         </View>
 
-        <Text style={styles.footer}>
+        {/* Footer */}
+        <Text className="text-[#96A196] text-[11px] text-center my-[25px]">
           AgroCycle · Cultivando un futuro sostenible
         </Text>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F4F7F0',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 22,
-    paddingTop: 15,
-    paddingBottom: 20,
-  },
-  logo: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#245238',
-  },
-  headerSubtitle: {
-    color: '#819083',
-    fontSize: 12,
-    marginTop: 3,
-  },
-  profile: {
-    width: 43,
-    height: 43,
-    borderRadius: 22,
-    backgroundColor: '#DCEBDD',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileText: {
-    color: '#245238',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  welcomeCard: {
-    backgroundColor: '#245238',
-    marginHorizontal: 20,
-    padding: 23,
-    borderRadius: 20,
-    marginBottom: 27,
-  },
-  welcomeSmall: {
-    color: '#C5DEC8',
-    fontSize: 11,
-    fontWeight: 'bold',
-    letterSpacing: 1.5,
-  },
-  welcomeTitle: {
-    color: '#FFFFFF',
-    fontSize: 29,
-    fontWeight: 'bold',
-    marginTop: 7,
-  },
-  welcomeDescription: {
-    color: '#E0EDE1',
-    fontSize: 14,
-    lineHeight: 21,
-    marginTop: 8,
-  },
-  location: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#386B4A',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginTop: 17,
-  },
-  locationText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-  },
-  sectionHeader: {
-    paddingHorizontal: 22,
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    fontSize: 19,
-    fontWeight: 'bold',
-    color: '#244631',
-  },
-  sectionSubtitle: {
-    color: '#849184',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  metricsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 15,
-    marginBottom: 27,
-  },
-  metricCard: {
-    width: '46%',
-    backgroundColor: '#FFFFFF',
-    margin: '2%',
-    padding: 15,
-    borderRadius: 17,
-    elevation: 2,
-  },
-  metricIcon: {
-    fontSize: 27,
-    marginBottom: 10,
-  },
-  metricLabel: {
-    color: '#778579',
-    fontSize: 12,
-  },
-  metricValue: {
-    color: '#245238',
-    fontSize: 23,
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-  metricDescription: {
-    color: '#91A094',
-    fontSize: 10,
-    marginTop: 5,
-  },
-  actionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 20,
-    marginBottom: 12,
-    padding: 15,
-    borderRadius: 16,
-    elevation: 2,
-  },
-  actionIcon: {
-    width: 48,
-    height: 48,
-    backgroundColor: '#EAF3E9',
-    borderRadius: 13,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  actionEmoji: {
-    fontSize: 25,
-  },
-  actionInfo: {
-    flex: 1,
-    marginLeft: 13,
-  },
-  actionTitle: {
-    color: '#28533A',
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
-  actionDescription: {
-    color: '#849184',
-    fontSize: 11,
-    marginTop: 4,
-  },
-  arrow: {
-    color: '#477D56',
-    fontSize: 28,
-  },
-  tipCard: {
-    backgroundColor: '#E5F0E2',
-    marginHorizontal: 20,
-    marginTop: 13,
-    padding: 17,
-    borderRadius: 16,
-  },
-  tipTitle: {
-    color: '#28533A',
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
-  tipText: {
-    color: '#58725D',
-    fontSize: 12,
-    lineHeight: 19,
-    marginTop: 8,
-  },
-  footer: {
-    color: '#96A196',
-    fontSize: 11,
-    textAlign: 'center',
-    marginVertical: 25,
-  },
-});
