@@ -28,6 +28,7 @@ function RootNavigator() {
 
     // Permitimos explícitamente estar en "profile" sin que nos expulse
     if (currentGroup === "profile") return;
+    if (currentGroup === "parcels") return;
 
     // Si existe una sesión, debe entrar a las tabs
     if (user && currentGroup !== "(tabs)") {
@@ -54,7 +55,7 @@ function RootNavigator() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="login" />
-      <Stack.Screen name="registro" />
+      <Stack.Screen name="register" />
       <Stack.Screen name="profile" />
       <Stack.Screen name="(tabs)" />
     </Stack>
