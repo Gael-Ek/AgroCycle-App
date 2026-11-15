@@ -7,6 +7,10 @@ export const AuthService = {
       password,
     });
 
+    if (error) {
+      console.log(error);
+      throw error;
+    }
     return data;
   },
 
