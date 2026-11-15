@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -18,6 +19,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const loginMutation = useLogin();
 
+  const isLoading = loginMutation.isPending;
   const {
     control,
     handleSubmit,
@@ -81,6 +83,7 @@ export default function LoginScreen() {
                     onChangeText={onChange}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    onBlur={onBlur}
                   />
 
                   {errors.email && <Text>{errors.email.message}</Text>}
@@ -90,7 +93,7 @@ export default function LoginScreen() {
 
             <Controller
               control={control}
-              name="email"
+              name="password"
               render={({ field: { onChange, onBlur, value } }) => (
                 <View>
                   <Text className="text-[#315D40] font-semibold mb-2 mt-3">
@@ -105,7 +108,7 @@ export default function LoginScreen() {
                     secureTextEntry
                   />
 
-                  {errors.email && <Text>{errors.email.message}</Text>}
+                  {errors.password && <Text>{errors.password.message}</Text>}
                 </View>
               )}
             />
@@ -115,13 +118,13 @@ export default function LoginScreen() {
               onPress={() => handleSubmit(onSubmit)()}
             >
               <Text className="text-white font-bold text-base">
-                Iniciar sesión
+                {isLoading ? <ActivityIndicator /> : "Iniciar sesión"}
               </Text>
             </Pressable>
 
             <View className="flex-row justify-center mt-6 flex-wrap">
               <Text className="text-[#718575]">¿No tienes una cuenta?</Text>
-              <Pressable onPress={() => router.push("/registro")}>
+              <Pressable onPress={() => router.push("/register")}>
                 <Text className="text-[#2F7048] font-bold"> Regístrate</Text>
               </Pressable>
             </View>

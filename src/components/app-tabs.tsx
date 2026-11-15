@@ -27,7 +27,7 @@ export default function AppTabs() {
       />
 
       <Tabs.Screen
-        name="terrenos"
+        name="parcels"
         options={{
           title: "Terrenos",
           tabBarLabel: "Terrenos",

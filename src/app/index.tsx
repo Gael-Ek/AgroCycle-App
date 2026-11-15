@@ -78,7 +78,7 @@ export default function WelcomeScreen() {
         <View className="mt-[27px] gap-3">
           <Pressable
             className="bg-[#24583A] p-[17px] rounded-[13px] items-center justify-center flex-row"
-            onPress={() => router.push("/registro" as any)}
+            onPress={() => router.push("/register")}
           >
             <Text className="text-white text-base font-bold">Comenzar</Text>
             <Text className="text-white text-[20px] absolute right-[20px]">
