@@ -1,3 +1,4 @@
+
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
@@ -8,7 +9,6 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
-pnpm-lock.yaml
 
 # Native
 .kotlin/
@@ -33,7 +33,7 @@ yarn-error.*
 
 # local env files
 .env*.local
-.env
+
 # typescript
 *.tsbuildinfo
 
@@ -42,3 +42,5 @@ example
 # generated native folders
 /ios
 /android
+config.bat
+
